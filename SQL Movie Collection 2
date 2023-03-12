@@ -1,0 +1,242 @@
+CREATE TABLE Movie(
+	Movie_ID INT PRIMARY KEY NOT NULL,
+	Title VARCHAR(80) NOT NULL,
+	Release_year INT NOT NULL,
+	Genre VARCHAR(10),
+	Movie_length INT NOT NULL
+);
+
+CREATE TABLE Actor(
+	Actor_ID INT PRIMARY KEY NOT NULL,
+	Name VARCHAR(30) NOT NULL,
+	Birth_year INT NOT NULL,
+	Nationality VARCHAR(20),
+	Movie_ID INT NOT NULL REFERENCES Movie(Movie_ID)
+);
+
+CREATE TABLE Director(
+	Director_ID INT PRIMARY KEY NOT NULL,
+	Name VARCHAR(30) NOT NULL,
+	Birth_year INT NOT NULL,
+	Nationality VARCHAR(20),
+	Movie_ID INT NOT NULL REFERENCES Movie(Movie_ID)
+);
+
+CREATE TABLE Studio(
+	Studio_ID INT PRIMARY KEY NOT NULL,
+	Name VARCHAR(50) NOT NULL,
+	Founding_year INT NOT NULL,
+	Location VARCHAR(20) NOT NULL,
+	Movie_ID INT NOT NULL REFERENCES Movie(Movie_ID)
+);
+
+CREATE TABLE Character(
+	Character_ID INT PRIMARY KEY NOT NULL,
+	Name VARCHAR(30) NOT NULL,
+	Movie_ID INT NOT NULL REFERENCES Movie(Movie_ID),
+	Actor_ID INT NOT NULL REFERENCES Actor(Actor_ID)
+);
+
+CREATE TABLE Review(
+	Review_ID INT PRIMARY KEY NOT NULL,
+	Rating INT NOT NULL,
+	Comment TEXT,
+	Movie_ID INT NOT NULL REFERENCES Movie(Movie_ID)
+);
+
+--These following queries create assisting tables for those actors, directors and studios that are involved in multiple movies and thus cannot be added to their respectable tables multiple times.
+CREATE TABLE Movie_Actor (
+  Movie_ID INT NOT NULL,
+  Actor_ID INT NOT NULL,
+  PRIMARY KEY (Movie_ID, Actor_ID),
+  FOREIGN KEY (Movie_ID) REFERENCES Movie(Movie_ID),
+  FOREIGN KEY (Actor_ID) REFERENCES Actor(Actor_ID)
+);
+
+CREATE TABLE Movie_Director (
+  Movie_ID INT NOT NULL,
+  Director_ID INT NOT NULL,
+  PRIMARY KEY (Movie_ID, Director_ID),
+  FOREIGN KEY (Movie_ID) REFERENCES Movie(Movie_ID),
+  FOREIGN KEY (Director_ID) REFERENCES Director(Director_ID)
+);
+
+CREATE TABLE Movie_Studio (
+  Movie_ID INT NOT NULL,
+  Studio_ID INT NOT NULL,
+  PRIMARY KEY (Movie_ID, Studio_ID),
+  FOREIGN KEY (Movie_ID) REFERENCES Movie(Movie_ID),
+  FOREIGN KEY (Studio_ID) REFERENCES Studio(Studio_ID)
+);
+
+CREATE TABLE Movie_Character (
+  Movie_ID INT NOT NULL,
+  Character_ID INT NOT NULL,
+  Actor_ID INT NOT NULL,
+  PRIMARY KEY (Movie_ID, Character_ID, Actor_ID),
+  FOREIGN KEY (Movie_ID) REFERENCES Movie(Movie_ID),
+  FOREIGN KEY (Character_ID) REFERENCES Character(Character_ID),
+  FOREIGN KEY (Actor_ID) REFERENCES Actor(Actor_ID)
+);
+
+INSERT INTO Movie (Movie_ID, Title, Release_year, Genre, Movie_length) VALUES
+('10001', 'The Dark Knight', 2008, 'Action', '2h 32min'), 
+('10002', 'Forrest Gump', 1994, 'Drama', '2h 22min'),
+('10003', 'The Godfather', 1972, 'Drama', '2h 55min'),
+('10004', 'Inception', 2010, 'Action', '2h 28min'),
+('10005', 'Titanic', 1997, 'Drama', '3h 14min'),
+('10006', 'The Martian', 2015, 'Sci-Fi', '2h 24min'),
+('10007', 'La La Land', 2016, 'Musical', '2h 8min'),
+('10008', 'Interstellar', 2014, 'Sci-Fi', '2h 49min'),
+('10009', 'The Social Network', 2010, 'Drama', '2h 1min'),
+('10010', 'Black Panther', 2018, 'Action', '2h 14min'),
+('10011', 'The Irishman', 2019, 'Crime', '3h 29min'),
+('10012', 'Parasite', 2019, 'Drama', '2h 12min'),
+('10013', 'Dune', 2021, 'Sci-Fi', '2h 35min')
+;
+
+INSERT INTO Actor (Actor_ID, Name, Birth_year, Nationality, Movie_ID) VALUES
+('20001', 'Christian Bale ', 1974, 'British', 10001),
+('20002', 'Heath Ledger ', 1979, 'Australian', 10001),
+('20003', 'Aaron Eckhart', 1968, 'American', 10001),
+('20004', 'Tom Hanks ', 1956, 'American', 10002),
+('20005', 'Robin Wright', 1966, 'American', 10002),
+('20006', 'Gary Sinise', 1955, 'American', 10002),
+('20007', 'Marlon Brando', 1924, 'American', 10003),
+('20008', 'Al Pacino', 1940, 'American', 10003),
+('20009', 'James Caan', 1940, 'American', 10003),
+('20010', 'Leonardo DiCaprio', 1974, 'American', 10004),
+('20011', 'Joseph Gordon-Levitt', 1981, 'American', 10004),
+('20012', 'Ellen Page', 1987, 'Canadian', 10004),
+('20013', 'Kate Winslet', 1975, 'British', 10005),
+('20014', 'Billy Zane', 1966, 'American', 10005),
+('20015', 'Matt Damon', 1970, 'American', 10006),
+('20016', 'Jessica Chastain', 1977, 'American', 10006),
+('20017', 'Chiwetel Ejiofor', 1977, 'British', 10006),
+('20018', 'Ryan Gosling', 1980, 'Canadian', 10007),
+('20019', 'Emma Stone ', 1988, 'American', 10007),
+('20020', 'John Legend', 1978, 'American', 10007),
+('20021', 'Matthew McConaughey', 1969, 'American', 10008),
+('20022', 'Anne Hathaway', 1982, 'American', 10008),
+('20024', 'Jesse Eisenberg', 1983, 'American', 10009),
+('20025', 'Andrew Garfield', 1983, 'American-British', 10009),
+('20026', 'Justin Timberlake', 1981, 'American', 10009),
+('20027', 'Chadwick Boseman', 1976, 'American', 10010),
+('20028', 'Michael B. Jordan', 1987, 'American', 10010),
+('20029', 'Lupita Nyong''o', 1983, 'Kenyan-Mexican', 10010),
+('20030', 'Robert De Niro', 1943, 'American', 10011),
+('20031', 'Joe Pesci', 1943, 'American', 10011),
+('20032', 'Song Kang-ho', 1967, 'South Korean', 10012),
+('20033', 'Lee Sun-kyun', 1975, 'South Korean', 10012),
+('20034', 'Cho Yeo-jeong', 1981, 'South Korean', 10012),
+('20035', 'Timothée Chalamet', 1995, 'American-French', 10013),
+('20036', 'Rebecca Ferguson', 1983, 'Swedish', 10013)
+;
+
+
+INSERT INTO Movie_Actor (Movie_ID, Actor_ID) VALUES
+(10005, 20010),
+(10008, 20023),
+(10011, 20008)
+;
+
+
+INSERT INTO Director (Director_ID, Name, Birth_year, Nationality, Movie_ID) VALUES
+('30001', 'Christopher Nolan ', 1970, 'British', 10001),
+('30002', 'Robert Zemeckis', 1951, 'American', 10002),
+('30003', 'Francis Ford Coppola', 1939, 'American', 10003),
+('30004', 'James Cameron', 1954, 'Canadian', 10005),
+('30006', 'Ridley Scott', 1937, 'British', 10006),
+('30007', 'Damien Chazelle', 1985, 'American', 10007),
+('30008', 'David Fincher', 1962, 'American', 10009),
+('30009', 'Ryan Coogler', 1986, 'American', 10010),
+('30010', 'Martin Scorsese', 1942, 'American', 10011),
+('30011', 'Bong Joon-ho', 1969, 'South Korean', 10012),
+('30005', 'Denis Villeneuve', 1967, 'Canadian', 10013)
+;
+
+--This table is to allow adding directors that have directed multiple movies.
+INSERT INTO Movie_Director (Movie_ID, Director_ID) VALUES
+(10004, '30001'),
+(10008, '30001')
+;
+
+INSERT INTO Studio (Studio_ID, Name, Founding_year, Location, Movie_ID) VALUES
+('40001', 'Warner Bros. Pictures ', 1923, 'American', 10001),
+('40002', 'Paramount Pictures', 1912, 'American', 10002),
+('40003', '20th Century Fox', 1935, 'American', 10005),
+('40004', 'Walt Disney Pictures', 1923, 'American', 10019),
+('40005', 'Summit Entertainment', 1991, 'American', 10007),
+('40006', 'Columbia Pictures', 1918, 'American', 10009),
+('40007', 'Marvel Studios', 1993, 'American', 10010),
+('40008', 'Netflix', 1997, 'American', 10011),
+('40009', 'CJ Entertainment', 1995, 'South Korean', 10012)
+;
+
+--This table is to allow adding studios that have been involved in producing multiple movies.
+INSERT INTO Movie_Actor (Movie_ID, Studio_ID) VALUES
+(10003, '40002'),
+(10004, '40001'),
+(10006, '40003'),
+(10008, '40002'),
+(10013, '40001')
+;
+
+INSERT INTO Character (Character_ID, Name, Movie_ID, Actor_ID) VALUES
+('50001', 'Bruce Wayne/Batman', 10001, 20001),
+('50002', 'Joker', 10001, 20002),
+('50003', 'Harvey Dent/Two-Face', 10001, 20003),
+('50004', 'Forrest Gump', 10002, 20004),
+('50005', 'Jenny Curran', 10002, 20005),
+('50006', 'Lt. Dan Taylor', 10002, 20006),
+('50007', 'Don Vito Corleone', 10003, 20007),
+('50008', 'Michael Corleone', 10003, 20008),
+('50009', 'Santino "Sonny" Corleone', 10003, 20009),
+('50010', 'Cobb', 10004, 20010),
+('50011', 'Arthur', 10004, 20011),
+('50012', 'Ariadne', 10004, 20012),
+('50013', 'Jack Dawson', 10005, 20010),
+('50014', 'Rose DeWitt Bukater', 10005, 20013),
+('50015', 'Cal Hockley', 10005, 20014),
+('50016', 'Mark Watney', 10006, 20015),
+('50017', 'Melissa Lewis', 10006, 20016),
+('50018', 'Vincent Kapoor', 10006, 20017),
+('50019', 'Sebastian Wilder', 10007, 20018),
+('50020', 'Mia Dolan', 10007, 20019),
+('50021', 'Keith', 10007, 20020),
+('50022', 'Cooper', 10008, 20021),
+('50023', 'Brand', 10008, 20022),
+('50024', 'Murph', 10008, 20023),
+('50025', 'Mark Zuckerberg', 10009, 20024),
+('50026', 'Eduardo Saverin', 10009, 20025),
+('50027', 'Sean Parker', 10009, 20026),
+('50028', 'T''Challa/Black Panther', 10010, 20027),
+('50029', 'Erik Killmonger', 10010, 20028),
+('50030', 'Nakia', 10010, 20029),
+('50031', 'Frank Sheeran', 10011, 20030),
+('50032', 'Jimmy Hoffa', 10011, 20008),
+('50033', 'Russell Bufalino', 10011, 20031),
+('50034', 'Kim Ki-taek', 10012, 20032),
+('50035', 'Park Dong-ik', 10012, 20033),
+('50036', 'Yeon-kyo', 10012, 20034),
+('50037', 'Paul Atreides', 10013, 20035),
+('50038', 'Lady Jessica', 10013, 20036)
+;
+
+
+
+INSERT INTO Review (Review_ID, Rating, Comment, Movie_ID) VALUES
+('60001', 9.0, 'With his smeared whiteface make-up and leering razor-slashed smile, Ledger''s Joker is creepy enough to look at, but what he represents is even more chilling', 10001),
+('60002', 8.8, 'Its timelessness, poignancy, and hilarity are infectiously powerful.', 10002),
+('60003', 9.2, 'A cultural milestone.', 10003),
+('60004', 8.8, 'Awesome doesn''t even begin to describe the sleek, clever, mind-blowing madness that is director Christopher Nolan''s aptly titled psychological (read: trippy) thriller Inception.', 10004),
+('60005', 7.9, 'Titanic is, in the end, and despite being prohibited to those under 12 years old, a film for children of all ages, for those ready to gasp at a parade of wonders and eager to be swept away.', 10005),
+('60006', 8.0, 10006),
+('60007', 8.0, 10007),
+('60008', 8.6, 'Interstellar, though ambitious and thrilling at points, is too complicated and doesn''t reach its full potential.', 10008),
+('60009', 7.8, 10009),
+('60010', 7.3, 'Black Panther gives off a contemporary crackle while staying true to its roots, both African and Marvel.', 10010),
+('60011', 7.8, 10011),
+('60012', 8.5, 10012),
+('60013', 8.0, 10013)
+;
